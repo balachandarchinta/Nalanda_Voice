@@ -3,9 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import os
 import uuid
-from .utils import extract_text_from_pdf, merge_audio_files
-from .pipeline import AudiobookPipeline
-from .tts_engine import TTSEngine
+from utils import extract_text_from_pdf, merge_audio_files
+from pipeline import AudiobookPipeline
+from tts_engine import TTSEngine
 
 app = FastAPI()
 

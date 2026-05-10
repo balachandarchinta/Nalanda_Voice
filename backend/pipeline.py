@@ -2,7 +2,7 @@ import os
 import json
 import google.generativeai as genai
 from dotenv import load_dotenv
-from .models import Stage1Output, Stage2Output, Stage3Output
+from models import Stage1Output, Stage2Output, Stage3Output
 
 load_dotenv()
 
