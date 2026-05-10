@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+python-multipart
+pdfplumber
+pytesseract
+pydub
+gtts
+openai
+elevenlabs
+python-dotenv
+pydantic
+aiofiles
+jinja2
+google-generativeai
