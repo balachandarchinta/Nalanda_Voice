@@ -30,66 +30,78 @@ body {
 
 .glass-card {
   background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border-radius: 32px;
+  box-shadow: 0 15px 45px 0 rgba(0, 0, 0, 0.4);
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.pipeline-horizontal {
   display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 24px 0;
+  position: relative;
+}
+
+.pipeline-horizontal::after {
+  content: '';
+  position: absolute;
+  top: 44px;
+  left: 50px;
+  right: 50px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  z-index: 0;
+}
+
+.step-horizontal {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px -10px var(--primary);
-  filter: brightness(1.1);
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  gap: 16px;
+  flex: 1;
+  text-align: center;
+  z-index: 1;
+  transition: all 0.5s ease;
 }
 
 .step-indicator {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  border: 2px solid var(--glass-border);
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid var(--glass-border);
   transition: all 0.3s ease;
+  color: var(--text-muted);
 }
 
 .step-indicator.active {
   background: var(--primary);
   border-color: var(--primary);
-  box-shadow: 0 0 15px var(--primary);
+  box-shadow: 0 0 20px var(--primary);
+  color: white;
+  transform: scale(1.1);
+}
+
+.step-indicator.completed {
+  background: #10b981;
+  border-color: #10b981;
+  color: white;
 }
 
 .progress-bar {
-  height: 8px;
+  height: 12px;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
+  border-radius: 10px;
   overflow: hidden;
+  margin: 10px 0;
 }
 
 .progress-fill {
