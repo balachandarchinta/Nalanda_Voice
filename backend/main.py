@@ -17,6 +17,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def root():
+    return {"message": "Audiobook Platform API is running"}
+
 UPLOAD_DIR = "uploads"
 AUDIO_DIR = "audio_output"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
