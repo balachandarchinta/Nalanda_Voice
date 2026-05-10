@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 
-const API_BASE = 'http://localhost:8000';
+
 
 const StageStep = ({ icon: Icon, title, description, isActive, isCompleted }) => (
   <div className={`step-horizontal ${isActive ? 'opacity-100 scale-105' : 'opacity-40'}`}>
@@ -32,6 +32,8 @@ const StageStep = ({ icon: Icon, title, description, isActive, isCompleted }) =>
 );
 
 function App() {
+  const [apiBase, setApiBase] = useState('http://localhost:8000');
+  const [showSettings, setShowSettings] = useState(false);
   const [file, setFile] = useState(null);
   const [taskId, setTaskId] = useState(null);
   const [status, setStatus] = useState(null);
@@ -54,11 +56,12 @@ function App() {
     formData.append('file', file);
 
     try {
-      const res = await axios.post(`${API_BASE}/upload`, formData);
+      const res = await axios.post(`${apiBase}/upload`, formData);
       setTaskId(res.data.task_id);
       toast.success('Pipeline Started!');
     } catch (err) {
-      toast.error('Upload failed');
+      toast.error('Upload failed. Check if backend is running and URL is correct.');
+      setShowSettings(true);
     }
   };
 
@@ -66,7 +69,7 @@ function App() {
     if (!taskId) return;
     const interval = setInterval(async () => {
       try {
-        const res = await axios.get(`${API_BASE}/status/${taskId}`);
+        const res = await axios.get(`${apiBase}/status/${taskId}`);
         setStatus(res.data);
         setProgress(res.data.progress || 0);
         if (res.data.status === 'completed' || res.data.status === 'error') {
@@ -75,13 +78,59 @@ function App() {
       } catch (err) {}
     }, 3000);
     return () => clearInterval(interval);
-  }, [taskId]);
+  }, [taskId, apiBase]);
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-slate-50 selection:bg-violet-500/30">
       <div className="max-w-6xl mx-auto px-6 py-16">
         <Toaster position="top-right" />
         
+        {/* Connection Settings */}
+        <div className="flex justify-end mb-4">
+          <button 
+            onClick={() => setShowSettings(!showSettings)}
+            className="flex items-center gap-2 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+          >
+            <Settings size={14} /> {showSettings ? 'Hide Settings' : 'Connection Settings'}
+          </button>
+        </div>
+
+        <AnimatePresence>
+          {showSettings && (
+            <motion.div 
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden mb-8"
+            >
+              <div className="glass-card p-6 bg-violet-500/5 border-violet-500/20">
+                <h4 className="text-sm font-bold uppercase tracking-wider mb-4">Backend Connection</h4>
+                <div className="flex gap-4">
+                  <input 
+                    type="text" 
+                    value={apiBase} 
+                    onChange={(e) => setApiBase(e.target.value)}
+                    placeholder="http://localhost:8000"
+                    className="flex-1 bg-black/20 border border-white/10 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-violet-500"
+                  />
+                  <button 
+                    onClick={() => {
+                      setShowSettings(false);
+                      toast.success('Connection updated');
+                    }}
+                    className="px-6 py-2 bg-violet-600 rounded-lg text-sm font-bold"
+                  >
+                    Save
+                  </button>
+                </div>
+                <p className="text-[10px] text-slate-500 mt-4">
+                  In Cloud Shell, use your Backend Web Preview URL (e.g., https://8000-dot-...).
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Hero Section */}
         <header className="mb-20 text-center">
           <motion.div 
