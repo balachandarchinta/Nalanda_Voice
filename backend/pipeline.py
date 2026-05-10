@@ -1,6 +1,6 @@
 import os
 import json
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 from models import Stage1Output, Stage2Output, Stage3Output
 
@@ -9,10 +9,9 @@ load_dotenv()
 # Configure Gemini
 api_key = os.getenv("GOOGLE_API_KEY")
 if api_key:
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    client = genai.Client(api_key=api_key)
 else:
-    model = None
+    client = None
 
 class AudiobookPipeline:
     def __init__(self):
@@ -33,25 +32,34 @@ Output ONLY valid JSON."""
         }
 
     async def run_stage1(self, raw_text: str):
-        if not model:
+        if not client:
             return {"error": "API Key not configured"}
         
         prompt = f"{self.system_prompts['stage1']}\n\nInput Text:\n{raw_text}\n\nOutput Schema: {json.dumps(Stage1Output.model_json_schema())}"
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model='gemini-1.5-flash',
+            contents=prompt
+        )
         return json.loads(response.text)
 
     async def run_stage2(self, stage1_json: dict):
-        if not model:
+        if not client:
             return {"error": "API Key not configured"}
         
         prompt = f"{self.system_prompts['stage2']}\n\nInput JSON:\n{json.dumps(stage1_json)}\n\nOutput Schema: {json.dumps(Stage2Output.model_json_schema())}"
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model='gemini-1.5-flash',
+            contents=prompt
+        )
         return json.loads(response.text)
 
     async def run_stage3(self, stage2_json: dict):
-        if not model:
+        if not client:
             return {"error": "API Key not configured"}
         
         prompt = f"{self.system_prompts['stage3']}\n\nInput JSON:\n{json.dumps(stage2_json)}\n\nOutput Schema: {json.dumps(Stage3Output.model_json_schema())}"
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model='gemini-1.5-flash',
+            contents=prompt
+        )
         return json.loads(response.text)
