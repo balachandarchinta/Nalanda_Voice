@@ -32,7 +32,7 @@ const StageStep = ({ icon: Icon, title, description, isActive, isCompleted }) =>
 );
 
 function App() {
-  const [apiBase, setApiBase] = useState('http://localhost:8000');
+  const [apiBase, setApiBase] = useState('/api');
   const [showSettings, setShowSettings] = useState(false);
   const [file, setFile] = useState(null);
   const [taskId, setTaskId] = useState(null);
